@@ -1,278 +1,294 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Dumbbell, 
-  Activity, 
-  RotateCcw, 
-  CheckCircle, 
-  Calendar,
-  Clock,
-  Play,
-  Award
-} from 'lucide-react';
-
-const ExerciseCard = ({ exercise, isCompleted, onToggle }) => {
-  return (
-    <div 
-      onClick={onToggle}
-      className={`relative p-4 rounded-xl border-2 transition-all cursor-pointer shadow-sm hover:shadow-md ${
-        isCompleted 
-          ? 'bg-green-50 border-green-500 opacity-75' 
-          : 'bg-white border-slate-100 hover:border-blue-300'
-      }`}
-    >
-      <div className="flex justify-between items-start">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <span className={`text-xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wide ${
-              exercise.category === 'Core' ? 'bg-orange-100 text-orange-700' :
-              exercise.category === 'Legs' ? 'bg-blue-100 text-blue-700' :
-              exercise.category === 'Upper' ? 'bg-purple-100 text-purple-700' :
-              'bg-emerald-100 text-emerald-700'
-            }`}>
-              {exercise.category}
-            </span>
-            <span className="text-xs text-slate-500 flex items-center gap-1">
-              <Dumbbell size={12} /> {exercise.equipment}
-            </span>
-          </div>
-          <h3 className={`font-bold text-lg ${isCompleted ? 'text-green-800 line-through' : 'text-slate-800'}`}>
-            {exercise.name}
-          </h3>
-          <p className="text-slate-600 text-sm mt-1 leading-relaxed">
-            {exercise.description}
-          </p>
-        </div>
-        <div className={`ml-4 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center border-2 ${
-          isCompleted ? 'bg-green-500 border-green-500 text-white' : 'border-slate-200 text-transparent'
-        }`}>
-          <CheckCircle size={18} fill="currentColor" />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default function App() {
-  const [todaysRoutine, setTodaysRoutine] = useState([]);
-  const [completedExercises, setCompletedExercises] = useState([]);
-  const [history, setHistory] = useState({ lastIndices: [], date: null });
-  const [showConfetti, setShowConfetti] = useState(false);
-
-  // The Master List
-  const exercises = [
-    // --- USER PROVIDED EXERCISES ---
-    { id: 1, name: "Knee Twist", category: "Core", equipment: "Mat", description: "Laying on floor, knees together, twisting knees from side to side." },
-    { id: 2, name: "Hip Circles", category: "Mobility", equipment: "None", description: "Standing, rotate hips from forward to back in large circles." },
-    { id: 3, name: "Toe Raises", category: "Legs", equipment: "None", description: "Keep heels on the ground and point toes upward repeatedly." },
-    { id: 4, name: "Step Lunge", category: "Legs", equipment: "Step", description: "Start on step platform, lunge backwards one leg at a time." },
-    { id: 5, name: "Weighted March", category: "Legs", equipment: "Dumbbells", description: "Stand with weights in each hand and march in place." },
-    { id: 6, name: "Anti-Twist (Pallof)", category: "Core", equipment: "Resistance Band", description: "Band on doorknob. Pull out directly in front, keeping core tight to resist twisting." },
-    { id: 7, name: "Reverse Crunch", category: "Core", equipment: "Mat, Ball", description: "Pinch ball between knees. Laying down, engage core and raise feet off ground to 90-degrees." },
-    { id: 8, name: "Banded Bridge", category: "Legs", equipment: "Loop Band", description: "Band around knees. Do a bridge lift from a lay-down position." },
-    { id: 9, name: "Clamshells", category: "Legs", equipment: "Loop Band", description: "Lay on side, band around knees. Open knees like a clamshell." },
-    { id: 10, name: "Heel Raises", category: "Legs", equipment: "None", description: "Toes on ground, heels come up (Calf raise)." },
-    { id: 11, name: "Sit-to-Stand", category: "Legs", equipment: "Chair", description: "Using a chair, sit down and stand back up repeatedly without using hands if possible." },
-    { id: 12, name: "Ball Knee Tuck", category: "Core", equipment: "Yoga Ball", description: "Bring knees up to chest (one at a time or together) using the yoga ball." },
-    { id: 13, name: "Nerve Glide", category: "Mobility", equipment: "Mat", description: "Laying on floor, extend one foot and then point toes." },
-    { id: 14, name: "Leg Lift", category: "Core", equipment: "Mat", description: "Laying on floor, lift one leg at a time keeping it straight." },
-    { id: 15, name: "Toe Taps", category: "Legs", equipment: "Step", description: "Stand before step, alternate tapping toe up on the step repeatedly." },
-    { id: 16, name: "Dead Bug", category: "Core", equipment: "Mat", description: "Laying on back, knees at 90 degrees, arms straight up. Extend opposite arm/leg." },
-    { id: 17, name: "Dead Bug Press", category: "Core", equipment: "Yoga Ball", description: "Dead bug position holding yoga ball against knees. Push hands into knees/ball." },
-    { id: 18, name: "Seated Banded March", category: "Legs", equipment: "Chair, Loop Band", description: "Sitting in chair, band around feet/knees, march in place lifting knees high." },
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT Routine Generator</title>
     
-    // --- AI GENERATED UPPER BODY (Dumbbells) ---
-    { id: 19, name: "Floor Chest Press", category: "Upper", equipment: "Dumbbells, Mat", description: "Lay on back, knees bent. Press dumbbells up from chest towards ceiling." },
-    { id: 20, name: "Standing Overhead Press", category: "Upper", equipment: "Dumbbells", description: "Stand with core tight. Press dumbbells from shoulders straight up overhead." },
-    { id: 21, name: "Bent Over Row", category: "Upper", equipment: "Dumbbells", description: "Hinge at hips, flat back. Pull dumbbells from hanging position up to hips." },
-    { id: 22, name: "Lateral Raises", category: "Upper", equipment: "Dumbbells", description: "Stand tall. Raise dumbbells out to the sides until arms are parallel with floor." },
-    { id: 23, name: "Bicep Curls", category: "Upper", equipment: "Dumbbells", description: "Palms facing forward, curl weights up towards shoulders keeping elbows pinned to side." },
-  ];
-
-  useEffect(() => {
-    // Load state from local storage on mount
-    const savedRoutine = localStorage.getItem('pt_todaysRoutine');
-    const savedCompleted = localStorage.getItem('pt_completed');
-    const savedHistory = localStorage.getItem('pt_history');
-
-    if (savedRoutine) setTodaysRoutine(JSON.parse(savedRoutine));
-    if (savedCompleted) setCompletedExercises(JSON.parse(savedCompleted));
-    if (savedHistory) setHistory(JSON.parse(savedHistory));
-  }, []);
-
-  const saveToHistory = (routine) => {
-    const routineIndices = routine.map(r => r.id);
-    const newHistory = { 
-      lastIndices: routineIndices, 
-      date: new Date().toLocaleDateString() 
-    };
-    setHistory(newHistory);
-    localStorage.setItem('pt_history', JSON.stringify(newHistory));
-  };
-
-  const generateRoutine = () => {
-    // 1. Filter out exercises done yesterday
-    const availableExercises = exercises.filter(ex => !history.lastIndices.includes(ex.id));
+    <!-- 1. Load Tailwind CSS (Styling) -->
+    <script src="https://cdn.tailwindcss.com"></script>
     
-    // 2. Separate by category
-    const core = availableExercises.filter(e => e.category === 'Core');
-    const legs = availableExercises.filter(e => e.category === 'Legs');
-    const upper = availableExercises.filter(e => e.category === 'Upper');
-    const mobility = availableExercises.filter(e => e.category === 'Mobility');
-
-    // Helper to shuffle and pick
-    const pickRandom = (arr, count) => {
-      const shuffled = [...arr].sort(() => 0.5 - Math.random());
-      return shuffled.slice(0, count);
-    };
-
-    // 3. Selection Logic (Target: 7 exercises)
-    // Goal: 2 Core, 2 Legs, 2 Upper, 1 Mobility/Other
-    const selectedCore = pickRandom(core, 2);
-    const selectedLegs = pickRandom(legs, 2);
-    const selectedUpper = pickRandom(upper, 2);
+    <!-- 2. Load React (The Engine) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    // Fill the last slot (7th) with mobility or whatever is left from core/legs if mobility runs out
-    let finalSlotPool = [...mobility];
-    if (finalSlotPool.length === 0) finalSlotPool = [...core, ...legs];
-    const selectedMobility = pickRandom(finalSlotPool, 1);
-
-    const newRoutine = [
-      ...selectedCore, 
-      ...selectedLegs, 
-      ...selectedUpper, 
-      ...selectedMobility
-    ].sort(() => 0.5 - Math.random()); // Shuffle the final order
-
-    setTodaysRoutine(newRoutine);
-    setCompletedExercises([]);
+    <!-- 3. Load Babel (Translator for the browser) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    // Save to local storage
-    localStorage.setItem('pt_todaysRoutine', JSON.stringify(newRoutine));
-    localStorage.setItem('pt_completed', JSON.stringify([]));
-    
-    // Update history immediately so we don't repeat if user clicks generate again tomorrow without refreshing
-    saveToHistory(newRoutine);
-    setShowConfetti(false);
-  };
+    <!-- 4. Load Lucide Icons -->
+    <script src="https://unpkg.com/lucide-react@0.263.1/dist/lucide-react.umd.js"></script>
+</head>
+<body class="bg-slate-50">
+    <div id="root"></div>
 
-  const toggleExercise = (id) => {
-    let newCompleted;
-    if (completedExercises.includes(id)) {
-      newCompleted = completedExercises.filter(exId => exId !== id);
-    } else {
-      newCompleted = [...completedExercises, id];
-    }
-    setCompletedExercises(newCompleted);
-    localStorage.setItem('pt_completed', JSON.stringify(newCompleted));
+    <script type="text/babel">
+        // --- SETUP: Get tools from the loaded scripts ---
+        const { useState, useEffect } = React;
+        const { 
+            Dumbbell, 
+            Activity, 
+            RotateCcw, 
+            CheckCircle, 
+            Calendar, 
+            Clock, 
+            Play, 
+            Award 
+        } = LucideReact;
 
-    if (newCompleted.length === todaysRoutine.length && todaysRoutine.length > 0) {
-      setShowConfetti(true);
-    }
-  };
+        // --- COMPONENT: Exercise Card ---
+        const ExerciseCard = ({ exercise, isCompleted, onToggle }) => {
+            return (
+                <div 
+                onClick={onToggle}
+                className={`relative p-4 rounded-xl border-2 transition-all cursor-pointer shadow-sm hover:shadow-md ${
+                    isCompleted 
+                    ? 'bg-green-50 border-green-500 opacity-75' 
+                    : 'bg-white border-slate-100 hover:border-blue-300'
+                }`}
+                >
+                <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wide ${
+                        exercise.category === 'Core' ? 'bg-orange-100 text-orange-700' :
+                        exercise.category === 'Legs' ? 'bg-blue-100 text-blue-700' :
+                        exercise.category === 'Upper' ? 'bg-purple-100 text-purple-700' :
+                        'bg-emerald-100 text-emerald-700'
+                        }`}>
+                        {exercise.category}
+                        </span>
+                        <span className="text-xs text-slate-500 flex items-center gap-1">
+                        <Dumbbell size={12} /> {exercise.equipment}
+                        </span>
+                    </div>
+                    <h3 className={`font-bold text-lg ${isCompleted ? 'text-green-800 line-through' : 'text-slate-800'}`}>
+                        {exercise.name}
+                    </h3>
+                    <p className="text-slate-600 text-sm mt-1 leading-relaxed">
+                        {exercise.description}
+                    </p>
+                    </div>
+                    <div className={`ml-4 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center border-2 ${
+                    isCompleted ? 'bg-green-500 border-green-500 text-white' : 'border-slate-200 text-transparent'
+                    }`}>
+                    <CheckCircle size={18} fill="currentColor" />
+                    </div>
+                </div>
+                </div>
+            );
+        };
 
-  const progress = todaysRoutine.length > 0 
-    ? Math.round((completedExercises.length / todaysRoutine.length) * 100) 
-    : 0;
+        // --- MAIN APP COMPONENT ---
+        function App() {
+            const [todaysRoutine, setTodaysRoutine] = useState([]);
+            const [completedExercises, setCompletedExercises] = useState([]);
+            const [history, setHistory] = useState({ lastIndices: [], date: null });
+            const [showConfetti, setShowConfetti] = useState(false);
 
-  return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20">
-      
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-2xl mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-                <Activity className="text-blue-600" />
-                PT Routine
-              </h1>
-              <p className="text-slate-500 text-sm">30 Minute Home Session</p>
-            </div>
-            {todaysRoutine.length > 0 && (
-              <div className="text-right">
-                <div className="text-2xl font-bold text-blue-600">{progress}%</div>
-                <div className="text-xs text-slate-400 font-medium">COMPLETE</div>
-              </div>
-            )}
-          </div>
-          
-          {/* Progress Bar */}
-          {todaysRoutine.length > 0 && (
-            <div className="h-1.5 w-full bg-slate-100 rounded-full mt-4 overflow-hidden">
-              <div 
-                className="h-full bg-blue-500 transition-all duration-500 ease-out"
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
-          )}
-        </div>
-      </div>
+            // The Master List
+            const exercises = [
+                // --- USER PROVIDED EXERCISES ---
+                { id: 1, name: "Knee Twist", category: "Core", equipment: "Mat", description: "Laying on floor, knees together, twisting knees from side to side." },
+                { id: 2, name: "Hip Circles", category: "Mobility", equipment: "None", description: "Standing, rotate hips from forward to back in large circles." },
+                { id: 3, name: "Toe Raises", category: "Legs", equipment: "None", description: "Keep heels on the ground and point toes upward repeatedly." },
+                { id: 4, name: "Step Lunge", category: "Legs", equipment: "Step", description: "Start on step platform, lunge backwards one leg at a time." },
+                { id: 5, name: "Weighted March", category: "Legs", equipment: "Dumbbells", description: "Stand with weights in each hand and march in place." },
+                { id: 6, name: "Anti-Twist (Pallof)", category: "Core", equipment: "Resistance Band", description: "Band on doorknob. Pull out directly in front, keeping core tight to resist twisting." },
+                { id: 7, name: "Reverse Crunch", category: "Core", equipment: "Mat, Ball", description: "Pinch ball between knees. Laying down, engage core and raise feet off ground to 90-degrees." },
+                { id: 8, name: "Banded Bridge", category: "Legs", equipment: "Loop Band", description: "Band around knees. Do a bridge lift from a lay-down position." },
+                { id: 9, name: "Clamshells", category: "Legs", equipment: "Loop Band", description: "Lay on side, band around knees. Open knees like a clamshell." },
+                { id: 10, name: "Heel Raises", category: "Legs", equipment: "None", description: "Toes on ground, heels come up (Calf raise)." },
+                { id: 11, name: "Sit-to-Stand", category: "Legs", equipment: "Chair", description: "Using a chair, sit down and stand back up repeatedly without using hands if possible." },
+                { id: 12, name: "Ball Knee Tuck", category: "Core", equipment: "Yoga Ball", description: "Bring knees up to chest (one at a time or together) using the yoga ball." },
+                { id: 13, name: "Nerve Glide", category: "Mobility", equipment: "Mat", description: "Laying on floor, extend one foot and then point toes." },
+                { id: 14, name: "Leg Lift", category: "Core", equipment: "Mat", description: "Laying on floor, lift one leg at a time keeping it straight." },
+                { id: 15, name: "Toe Taps", category: "Legs", equipment: "Step", description: "Stand before step, alternate tapping toe up on the step repeatedly." },
+                { id: 16, name: "Dead Bug", category: "Core", equipment: "Mat", description: "Laying on back, knees at 90 degrees, arms straight up. Extend opposite arm/leg." },
+                { id: 17, name: "Dead Bug Press", category: "Core", equipment: "Yoga Ball", description: "Dead bug position holding yoga ball against knees. Push hands into knees/ball." },
+                { id: 18, name: "Seated Banded March", category: "Legs", equipment: "Chair, Loop Band", description: "Sitting in chair, band around feet/knees, march in place lifting knees high." },
+                
+                // --- AI GENERATED UPPER BODY (Dumbbells) ---
+                { id: 19, name: "Floor Chest Press", category: "Upper", equipment: "Dumbbells, Mat", description: "Lay on back, knees bent. Press dumbbells up from chest towards ceiling." },
+                { id: 20, name: "Standing Overhead Press", category: "Upper", equipment: "Dumbbells", description: "Stand with core tight. Press dumbbells from shoulders straight up overhead." },
+                { id: 21, name: "Bent Over Row", category: "Upper", equipment: "Dumbbells", description: "Hinge at hips, flat back. Pull dumbbells from hanging position up to hips." },
+                { id: 22, name: "Lateral Raises", category: "Upper", equipment: "Dumbbells", description: "Stand tall. Raise dumbbells out to the sides until arms are parallel with floor." },
+                { id: 23, name: "Bicep Curls", category: "Upper", equipment: "Dumbbells", description: "Palms facing forward, curl weights up towards shoulders keeping elbows pinned to side." },
+            ];
 
-      {/* Content */}
-      <div className="max-w-2xl mx-auto px-4 py-6">
-        
-        {/* Welcome / Empty State */}
-        {todaysRoutine.length === 0 && (
-          <div className="text-center py-12">
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 inline-block mb-6">
-              <Dumbbell size={48} className="text-blue-500 mx-auto mb-4" />
-              <h2 className="text-xl font-bold text-slate-800 mb-2">Ready to work out?</h2>
-              <p className="text-slate-500 max-w-xs mx-auto">
-                Generate a 7-exercise routine balanced between core, legs, and upper body. No repeats from your last session.
-              </p>
-            </div>
-            <button 
-              onClick={generateRoutine}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all flex items-center gap-2 mx-auto"
-            >
-              <Play fill="currentColor" size={20} />
-              Generate Today's Routine
-            </button>
-          </div>
-        )}
+            useEffect(() => {
+                // Load state from local storage on mount
+                const savedRoutine = localStorage.getItem('pt_todaysRoutine');
+                const savedCompleted = localStorage.getItem('pt_completed');
+                const savedHistory = localStorage.getItem('pt_history');
 
-        {/* List of Exercises */}
-        {todaysRoutine.length > 0 && (
-          <div className="space-y-4">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="font-bold text-slate-700 flex items-center gap-2">
-                <Calendar size={18} />
-                Today's Plan
-              </h2>
-              <div className="text-sm text-slate-500 flex items-center gap-1">
-                <Clock size={14} /> Est. 30 Mins
-              </div>
-            </div>
+                if (savedRoutine) setTodaysRoutine(JSON.parse(savedRoutine));
+                if (savedCompleted) setCompletedExercises(JSON.parse(savedCompleted));
+                if (savedHistory) setHistory(JSON.parse(savedHistory));
+            }, []);
 
-            {todaysRoutine.map((exercise) => (
-              <ExerciseCard 
-                key={exercise.id} 
-                exercise={exercise} 
-                isCompleted={completedExercises.includes(exercise.id)}
-                onToggle={() => toggleExercise(exercise.id)}
-              />
-            ))}
+            const saveToHistory = (routine) => {
+                const routineIndices = routine.map(r => r.id);
+                const newHistory = { 
+                lastIndices: routineIndices, 
+                date: new Date().toLocaleDateString() 
+                };
+                setHistory(newHistory);
+                localStorage.setItem('pt_history', JSON.stringify(newHistory));
+            };
 
-            {/* Victory State */}
-            {showConfetti && (
-              <div className="mt-8 p-6 bg-green-100 rounded-xl text-center border border-green-200 animation-bounce">
-                <Award className="mx-auto text-green-600 mb-2" size={40} />
-                <h3 className="text-xl font-bold text-green-800">Workout Complete!</h3>
-                <p className="text-green-700">Great job today. Rest up!</p>
-              </div>
-            )}
+            const generateRoutine = () => {
+                const availableExercises = exercises.filter(ex => !history.lastIndices.includes(ex.id));
+                
+                const core = availableExercises.filter(e => e.category === 'Core');
+                const legs = availableExercises.filter(e => e.category === 'Legs');
+                const upper = availableExercises.filter(e => e.category === 'Upper');
+                const mobility = availableExercises.filter(e => e.category === 'Mobility');
 
-            <button 
-              onClick={generateRoutine}
-              className="w-full mt-8 py-4 text-slate-400 hover:text-slate-600 font-medium text-sm flex items-center justify-center gap-2 transition-colors"
-            >
-              <RotateCcw size={16} />
-              Generate New Routine (Resets Progress)
-            </button>
-          </div>
-        )}
-      </div>
+                const pickRandom = (arr, count) => {
+                const shuffled = [...arr].sort(() => 0.5 - Math.random());
+                return shuffled.slice(0, count);
+                };
 
-    </div>
-  );
-}
+                const selectedCore = pickRandom(core, 2);
+                const selectedLegs = pickRandom(legs, 2);
+                const selectedUpper = pickRandom(upper, 2);
+                
+                let finalSlotPool = [...mobility];
+                if (finalSlotPool.length === 0) finalSlotPool = [...core, ...legs];
+                const selectedMobility = pickRandom(finalSlotPool, 1);
+
+                const newRoutine = [
+                ...selectedCore, 
+                ...selectedLegs, 
+                ...selectedUpper, 
+                ...selectedMobility
+                ].sort(() => 0.5 - Math.random()); 
+
+                setTodaysRoutine(newRoutine);
+                setCompletedExercises([]);
+                
+                localStorage.setItem('pt_todaysRoutine', JSON.stringify(newRoutine));
+                localStorage.setItem('pt_completed', JSON.stringify([]));
+                
+                saveToHistory(newRoutine);
+                setShowConfetti(false);
+            };
+
+            const toggleExercise = (id) => {
+                let newCompleted;
+                if (completedExercises.includes(id)) {
+                newCompleted = completedExercises.filter(exId => exId !== id);
+                } else {
+                newCompleted = [...completedExercises, id];
+                }
+                setCompletedExercises(newCompleted);
+                localStorage.setItem('pt_completed', JSON.stringify(newCompleted));
+
+                if (newCompleted.length === todaysRoutine.length && todaysRoutine.length > 0) {
+                setShowConfetti(true);
+                }
+            };
+
+            const progress = todaysRoutine.length > 0 
+                ? Math.round((completedExercises.length / todaysRoutine.length) * 100) 
+                : 0;
+
+            return (
+                <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20">
+                <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
+                    <div className="max-w-2xl mx-auto px-4 py-4">
+                    <div className="flex justify-between items-center">
+                        <div>
+                        <h1 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+                            <Activity className="text-blue-600" />
+                            PT Routine
+                        </h1>
+                        <p className="text-slate-500 text-sm">30 Minute Home Session</p>
+                        </div>
+                        {todaysRoutine.length > 0 && (
+                        <div className="text-right">
+                            <div className="text-2xl font-bold text-blue-600">{progress}%</div>
+                            <div className="text-xs text-slate-400 font-medium">COMPLETE</div>
+                        </div>
+                        )}
+                    </div>
+                    
+                    {todaysRoutine.length > 0 && (
+                        <div className="h-1.5 w-full bg-slate-100 rounded-full mt-4 overflow-hidden">
+                        <div 
+                            className="h-full bg-blue-500 transition-all duration-500 ease-out"
+                            style={{ width: `${progress}%` }}
+                        ></div>
+                        </div>
+                    )}
+                    </div>
+                </div>
+
+                <div className="max-w-2xl mx-auto px-4 py-6">
+                    {todaysRoutine.length === 0 && (
+                    <div className="text-center py-12">
+                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 inline-block mb-6">
+                        <Dumbbell size={48} className="text-blue-500 mx-auto mb-4" />
+                        <h2 className="text-xl font-bold text-slate-800 mb-2">Ready to work out?</h2>
+                        <p className="text-slate-500 max-w-xs mx-auto">
+                            Generate a 7-exercise routine balanced between core, legs, and upper body. No repeats from your last session.
+                        </p>
+                        </div>
+                        <button 
+                        onClick={generateRoutine}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all flex items-center gap-2 mx-auto"
+                        >
+                        <Play fill="currentColor" size={20} />
+                        Generate Today's Routine
+                        </button>
+                    </div>
+                    )}
+
+                    {todaysRoutine.length > 0 && (
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center mb-4">
+                        <h2 className="font-bold text-slate-700 flex items-center gap-2">
+                            <Calendar size={18} />
+                            Today's Plan
+                        </h2>
+                        <div className="text-sm text-slate-500 flex items-center gap-1">
+                            <Clock size={14} /> Est. 30 Mins
+                        </div>
+                        </div>
+
+                        {todaysRoutine.map((exercise) => (
+                        <ExerciseCard 
+                            key={exercise.id} 
+                            exercise={exercise} 
+                            isCompleted={completedExercises.includes(exercise.id)}
+                            onToggle={() => toggleExercise(exercise.id)}
+                        />
+                        ))}
+
+                        {showConfetti && (
+                        <div className="mt-8 p-6 bg-green-100 rounded-xl text-center border border-green-200 animation-bounce">
+                            <Award className="mx-auto text-green-600 mb-2" size={40} />
+                            <h3 className="text-xl font-bold text-green-800">Workout Complete!</h3>
+                            <p className="text-green-700">Great job today. Rest up!</p>
+                        </div>
+                        )}
+
+                        <button 
+                        onClick={generateRoutine}
+                        className="w-full mt-8 py-4 text-slate-400 hover:text-slate-600 font-medium text-sm flex items-center justify-center gap-2 transition-colors"
+                        >
+                        <RotateCcw size={16} />
+                        Generate New Routine (Resets Progress)
+                        </button>
+                    </div>
+                    )}
+                </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
