@@ -223,6 +223,7 @@
 
     <script>
         // --- DATA ---
+        // Removed hardcoded photoUrls to use dynamic color/initial generation
         const ALL_DATA = [
             // Root
             {
@@ -232,8 +233,7 @@
                 team: "KNA Finance",
                 managerName: "Greg Marino", 
                 keywords: ["cfo", "executive", "finance", "planning", "risk management", "capital structure", "compliance", "investor relations"],
-                description: "The Chief Financial Officer (CFO) is responsible for all financial aspects of the company, including financial planning, reporting, risk management, and capital structure. The CFO drives sustainable, long-term financial growth and ensures regulatory compliance. They lead the Finance team, partnering with the CEO and executive leadership to guide strategic decision-making and resource allocation across the organization.",
-                photoUrl: "https://placehold.co/100x100/1f2937/ffffff?text=JD"
+                description: "The Chief Financial Officer (CFO) is responsible for all financial aspects of the company, including financial planning, reporting, risk management, and capital structure. The CFO drives sustainable, long-term financial growth and ensures regulatory compliance. They lead the Finance team, partnering with the CEO and executive leadership to guide strategic decision-making and resource allocation across the organization."
             },
             // Directs of Jerry
             {
@@ -243,8 +243,7 @@
                 title: "Executive Director, Finance B...",
                 keywords: ["executive", "leadership", "revenue", "finance systems", "strategy", "governance"],
                 description: "Leads the strategic direction and governance for all major financial systems across the organization, ensuring regulatory compliance and operational excellence.",
-                managerName: 'Jerry Dervin', 
-                photoUrl: "https://placehold.co/100x100/4f46e5/ffffff?text=EC"
+                managerName: 'Jerry Dervin'
             },
             {
                 id: "georgi_eliseev",
@@ -253,8 +252,7 @@
                 team: "FP&A (Supplemental Education)",
                 managerName: "Jerry Dervin",
                 keywords: ["fp&a", "planning", "finance", "budgeting", "forecasting", "resource allocation", "operational partnership"],
-                description: "Oversees strategic financial planning and analysis (FP&A) for a division, driving budget processes, forecasting, and resource allocation to meet financial targets. Partners with operational leaders to ensure sound financial management.",
-                photoUrl: "https://placehold.co/100x100/10b981/ffffff?text=GE"
+                description: "Oversees strategic financial planning and analysis (FP&A) for a division, driving budget processes, forecasting, and resource allocation to meet financial targets. Partners with operational leaders to ensure sound financial management."
             },
             {
                 id: "gordon_williams",
@@ -263,8 +261,7 @@
                 team: "FP&A (Higher Education)",
                 managerName: "Jerry Dervin",
                 keywords: ["fp&a", "planning", "finance", "budgeting", "higher education", "resource allocation", "forecasting"],
-                description: "Oversees strategic financial planning and analysis (FP&A) for a division, driving budget processes, forecasting, and resource allocation to meet financial targets. Partners with operational leaders to ensure sound financial management.",
-                photoUrl: "https://placehold.co/100x100/10b981/ffffff?text=GW"
+                description: "Oversees strategic financial planning and analysis (FP&A) for a division, driving budget processes, forecasting, and resource allocation to meet financial targets. Partners with operational leaders to ensure sound financial management."
             },
             {
                 id: "jason_shumrak",
@@ -273,8 +270,7 @@
                 team: "KNA Procurement",
                 managerName: "Jerry Dervin",
                 keywords: ["procurement", "sourcing", "finance", "vendor negotiations", "contract management", "cost efficiency", "risk reduction"],
-                description: "Procurement manages and leads all strategic sourcing activities, vendor negotiations, and contract lifecycle management across the organization. This role develops and executes procurement strategies to optimize cost efficiency, minimize risk, and ensure the timely acquisition of goods and services. They are responsible for compliance, fostering strong supplier relationships, and integrating best-in-class procurement technologies and practices.",
-                photoUrl: "https://placehold.co/100x100/10b981/ffffff?text=JS"
+                description: "Procurement manages and leads all strategic sourcing activities, vendor negotiations, and contract lifecycle management across the organization. This role develops and executes procurement strategies to optimize cost efficiency, minimize risk, and ensure the timely acquisition of goods and services. They are responsible for compliance, fostering strong supplier relationships, and integrating best-in-class procurement technologies and practices."
             },
              {
                 id: "brian_lingen",
@@ -283,8 +279,7 @@
                 team: "Sales and Revenue Operations",
                 managerName: "Jerry Dervin",
                 keywords: ["sales", "revenue", "analytics", "process optimization", "sales alignment", "revenue efficiency"],
-                description: "Manages a critical and specialized finance-adjacent function, such as Sales and Revenue Operations, focusing on maximizing revenue efficiency, process optimization, and aligning sales activities with financial goals.",
-                photoUrl: "https://placehold.co/100x100/10b981/ffffff?text=BL"
+                description: "Manages a critical and specialized finance-adjacent function, such as Sales and Revenue Operations, focusing on maximizing revenue efficiency, process optimization, and aligning sales activities with financial goals."
             },
              {
                 id: "ozerk_gogus",
@@ -293,8 +288,7 @@
                 team: "KNA Data & Analytics",
                 managerName: "Jerry Dervin",
                 keywords: ["data", "analytics", "fp&a", "data governance", "data engineering", "tableau", "infrastructure"],
-                description: "Oversees the strategic direction and execution of the organization's data engineering and analytics functions. This includes leading data governance, managing the data infrastructure, and overseeing the development and implementation of reporting structures for all available data assets, utilizing tools such as Tableau and others.",
-                photoUrl: "https://placehold.co/100x100/10b981/ffffff?text=OG"
+                description: "Oversees the strategic direction and execution of the organization's data engineering and analytics functions. This includes leading data governance, managing the data infrastructure, and overseeing the development and implementation of reporting structures for all available data assets, utilizing tools such as Tableau and others."
             },
             {
                 id: "diane_wright",
@@ -303,8 +297,7 @@
                 team: "Accounts Payable",
                 managerName: "Jerry Dervin",
                 keywords: ["accounting", "accounts payable", "gaap", "general ledger", "financial reporting", "accounts receivable"],
-                description: "Manages the day-to-day accounting operations, including accounts payable, accounts receivable, general ledger, and ensures timely and accurate financial reporting in compliance with GAAP.",
-                photoUrl: "https://placehold.co/100x100/f59e0b/ffffff?text=DW"
+                description: "Manages the day-to-day accounting operations, including accounts payable, accounts receivable, general ledger, and ensures timely and accurate financial reporting in compliance with GAAP."
             },
             {
                 id: "rose_michaelides",
@@ -313,8 +306,7 @@
                 team: "Business Office",
                 managerName: "Jerry Dervin",
                 keywords: ["business office", "operations", "admin", "contract management", "policy alignment"],
-                description: "Manages a core operational function that supports Finance, ensuring efficient administrative processes, contract management, and operational alignment with financial policy.",
-                photoUrl: "https://placehold.co/100x100/f59e0b/ffffff?text=RM"
+                description: "Manages a core operational function that supports Finance, ensuring efficient administrative processes, contract management, and operational alignment with financial policy."
             },
             {
                 id: "shannon_gilmer",
@@ -323,8 +315,7 @@
                 team: "KNA Finance",
                 managerName: "Jerry Dervin",
                 keywords: ["operations", "finance", "process", "efficiency", "internal controls"],
-                description: "Manages the daily financial and administrative operations for a specific finance department, focusing on efficiency, process improvement, and internal controls.",
-                photoUrl: "https://placehold.co/100x100/f59e0b/ffffff?text=SG"
+                description: "Manages the daily financial and administrative operations for a specific finance department, focusing on efficiency, process improvement, and internal controls."
             },
             {
                 id: "zaida_cintron",
@@ -333,8 +324,7 @@
                 team: "KNA Finance",
                 managerName: "Jerry Dervin",
                 keywords: ["accounting", "journal entries", "reconciliations", "month-end close", "financial statements"],
-                description: "Performs essential accounting tasks, including journal entries, reconciliations, and assisting with month-end close and financial statement preparation.",
-                photoUrl: "https://placehold.co/100x100/f59e0b/ffffff?text=ZC"
+                description: "Performs essential accounting tasks, including journal entries, reconciliations, and assisting with month-end close and financial statement preparation."
             },
 
             // Directs of Eugene
@@ -345,8 +335,7 @@
                 title: "Director, Product Revenue",
                 keywords: ["director", "revenue", "product", "forecasting", "reporting"],
                 description: "Manages the product revenue stream, focusing on accurate forecasting, reporting, and implementation of revenue recognition policies.",
-                managerName: 'Eugene Cuoco',
-                photoUrl: "https://placehold.co/100x100/374151/ffffff?text=RT"
+                managerName: 'Eugene Cuoco'
             },
             {
                 id: "3",
@@ -355,8 +344,7 @@
                 title: "Project Manager, Operational...",
                 keywords: ["project management", "operations", "implementation", "process improvement"],
                 description: "Drives operational efficiency through project management of finance system rollouts and process improvement initiatives.",
-                managerName: 'Eugene Cuoco', 
-                photoUrl: "https://placehold.co/100x100/374151/ffffff?text=AF"
+                managerName: 'Eugene Cuoco'
             },
              {
                 id: "4",
@@ -365,8 +353,7 @@
                 title: "Product Catalog Director",
                 keywords: ["product catalog", "data governance", "sku management", "systems integration"],
                 description: "Oversees the product catalog data structure, ensuring consistency and integrity for all financial reporting and transactional systems.",
-                managerName: 'Eugene Cuoco',
-                photoUrl: "https://placehold.co/100x100/374151/ffffff?text=MS"
+                managerName: 'Eugene Cuoco'
             },
              {
                 id: "5",
@@ -375,8 +362,7 @@
                 title: "Associate Financial Analyst",
                 keywords: ["analyst", "financial analysis"],
                 description: "Provides analytical support and data validation.",
-                managerName: 'Eugene Cuoco',
-                photoUrl: "https://placehold.co/100x100/374151/ffffff?text=NS"
+                managerName: 'Eugene Cuoco'
             },
             
             // --- NEW DATA (Matching Video) for Matthew Strickland ---
@@ -387,8 +373,7 @@
                 team: "Product Catalog",
                 managerName: "Matthew Strickland",
                 keywords: ["data operations", "product", "catalog"],
-                description: "Handles daily product data operations and catalog maintenance.",
-                photoUrl: "https://placehold.co/100x100/57534e/ffffff?text=GM"
+                description: "Handles daily product data operations and catalog maintenance."
             },
             {
                 id: "jen_peterson",
@@ -397,8 +382,7 @@
                 team: "Product Catalog",
                 managerName: "Matthew Strickland",
                 keywords: ["data", "operations", "sku"],
-                description: "Ensures data quality in product listings.",
-                photoUrl: "https://placehold.co/100x100/57534e/ffffff?text=JP"
+                description: "Ensures data quality in product listings."
             },
             {
                 id: "jesse_renaud",
@@ -407,8 +391,7 @@
                 team: "Product Catalog",
                 managerName: "Matthew Strickland",
                 keywords: ["operations", "catalog", "systems"],
-                description: "Supports catalog system integrations.",
-                photoUrl: "https://placehold.co/100x100/57534e/ffffff?text=JR"
+                description: "Supports catalog system integrations."
             },
             {
                 id: "mark_belthauser",
@@ -417,8 +400,7 @@
                 team: "Product Catalog",
                 managerName: "Matthew Strickland",
                 keywords: ["data", "spec", "finance"],
-                description: "Maintains financial data attributes for products.",
-                photoUrl: "https://placehold.co/100x100/57534e/ffffff?text=MB"
+                description: "Maintains financial data attributes for products."
             }
         ];
 
@@ -446,10 +428,43 @@
             });
 
             // Find Default Root (Jerry)
-            const root = ALL_DATA.find(p => p.managerName === "Greg Marino"); // Based on data
+            const root = ALL_DATA.find(p => p.managerName === "Greg Marino"); 
             if(root) currentRootId = root.id;
             
             renderView();
+        }
+
+        // --- HELPER FUNCTIONS ---
+        function getInitials(name) {
+            const parts = name.split(' ');
+            if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+            return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        }
+
+        // Recursive function to determine depth from Jerry Dervin
+        function getLevel(person) {
+            if (!person) return 0;
+            if (person.managerName === "Greg Marino") return 0; // Root (Jerry)
+            
+            const manager = nameMap[person.managerName];
+            return 1 + getLevel(manager);
+        }
+
+        // Get Color Hex based on Level
+        function getColorForLevel(level) {
+            // Level 0: Root (Jerry) - Keep as primary/dark
+            if (level === 0) return '4f46e5'; // Indigo (Primary)
+
+            // Level 1: Reports to Jerry -> Green
+            if (level === 1) return '10b981'; // Emerald 500
+
+            // Level 2: Beneath Level 1 -> Black (Dark Gray)
+            if (level === 2) return '1f2937'; // Gray 800
+
+            // Level 3: Beneath Level 2 -> Blue
+            if (level >= 3) return '3b82f6'; // Blue 500
+            
+            return '6b7280'; // Default Gray
         }
 
         // --- RENDER LOGIC ---
@@ -528,9 +543,12 @@
             const reports = reportsMap[data.name] || [];
             const reportCount = reports.length;
             
-            // Hero card is slightly bigger? Handled by wrapper CSS.
-            // We need a specific action button for "View Team" if it's NOT the hero but has reports.
-            
+            // Dynamic Color and Initials Logic
+            const level = getLevel(data);
+            const colorHex = getColorForLevel(level);
+            const initials = getInitials(data.name);
+            const dynamicPhotoUrl = `https://placehold.co/100x100/${colorHex}/ffffff?text=${initials}`;
+
             let actionBtn = '';
             // If card has reports and is NOT the currently focused hero, show Drill Down button
             if (reportCount > 0 && !isHero) {
@@ -555,7 +573,7 @@
                         <div class="card-face card-front border border-gray-200">
                             <div class="flex items-start space-x-4">
                                 <img class="w-16 h-16 rounded-full object-cover shadow-md border-2 border-white"
-                                     src="${data.photoUrl}"
+                                     src="${dynamicPhotoUrl}"
                                      alt="${data.name}">
                                 <div>
                                     <p class="text-xs font-bold text-primary mb-0.5 truncate max-w-[150px]">${data.team}</p>
